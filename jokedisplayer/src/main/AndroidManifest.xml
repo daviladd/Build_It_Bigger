@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="com.daviladd.android.jokedisplayer">
+    <application>
+        <activity
+            android:name=".JokeDisplayerActivity"
+            android:label="@string/activity_joke_displayer_title"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        </activity>
+    </application>
+</manifest>
