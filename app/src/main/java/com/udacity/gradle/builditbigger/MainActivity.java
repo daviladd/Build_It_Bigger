@@ -1,12 +1,16 @@
 package com.udacity.gradle.builditbigger;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-public class MainActivity extends AppCompatActivity {
+import com.daviladd.android.jokedisplayer.JokeDisplayerActivity;
+
+public class MainActivity extends AppCompatActivity
+        implements EndpointsAsyncTask.EndpointsAsyncTaskListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,20 +42,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void tellJoke(View view) {
-        // Step 1: Create a Java library
-        /*
-        Toast.makeText(this, JokeProvider.getRandomJoke(), Toast.LENGTH_LONG).show();
-        */
-
-        // Step 2: Create an Android Library
-        /*
-        Intent intent = new Intent(this, JokeDisplayerActivity.class);
-        intent.putExtra(JokeDisplayerActivity.KEY_JOKE, JokeProvider.getRandomJoke());
-        startActivity(intent);
-        */
-        // Step 3: Setup GCE
-        new EndpointsAsyncTask().execute(this);
+        EndpointsAsyncTask endpointsAsyncTask = new EndpointsAsyncTask();
+        endpointsAsyncTask.setListener(this).execute();
     }
 
-
+    @Override
+    public void onTaskCompleted(String result) {
+        Intent intent = new Intent(this, JokeDisplayerActivity.class);
+        intent.putExtra(JokeDisplayerActivity.KEY_JOKE, result);
+        startActivity(intent);
+    }
 }

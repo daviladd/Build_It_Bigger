@@ -15,12 +15,12 @@ import java.io.IOException;
 
 // Original code taken from: https://github.com/GoogleCloudPlatform/gradle-appengine-templates/tree/77e9910911d5412e5efede5fa681ec105a0f02ad/HelloEndpoints#2-connecting-your-android-app-to-the-backend
 
-class EndpointsAsyncTask extends AsyncTask<Context, Void, String> {
+class EndpointsAsyncTask extends AsyncTask<Void, Void, String> {
+    private EndpointsAsyncTaskListener mListener = null;
     private static MyApi myApiService = null;
-    private Context context;
 
     @Override
-    protected String doInBackground(Context... params) {
+    protected String doInBackground(Void... params) {
         if (myApiService == null) {  // Only do this once
             MyApi.Builder builder = new MyApi.Builder(AndroidHttp.newCompatibleTransport(),
                     new AndroidJsonFactory(), null)
@@ -39,8 +39,6 @@ class EndpointsAsyncTask extends AsyncTask<Context, Void, String> {
             myApiService = builder.build();
         }
 
-        context = params[0];
-
         try {
             return myApiService.getRandomJoke().execute().getData();
         } catch (IOException e) {
@@ -50,9 +48,17 @@ class EndpointsAsyncTask extends AsyncTask<Context, Void, String> {
 
     @Override
     protected void onPostExecute(String result) {
-        //Toast.makeText(context, result, Toast.LENGTH_LONG).show();
-        Intent intent = new Intent(context, JokeDisplayerActivity.class);
-        intent.putExtra(JokeDisplayerActivity.KEY_JOKE, result);
-        context.startActivity(intent);
+        if (null != this.mListener) {
+            mListener.onTaskCompleted(result);
+        }
+    }
+
+    public EndpointsAsyncTask setListener(EndpointsAsyncTaskListener listener) {
+        this.mListener = listener;
+        return this;
+    }
+
+    public static interface EndpointsAsyncTaskListener {
+        public void onTaskCompleted(String result);
     }
 }
