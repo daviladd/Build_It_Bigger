@@ -5,6 +5,7 @@ import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
 
 import javax.inject.Named;
+import com.daviladd.android.jokeprovider.JokeProvider;
 
 /** An endpoint class we are exposing */
 @Api(
@@ -23,6 +24,14 @@ public class MyEndpoint {
     public MyBean sayHi(@Named("name") String name) {
         MyBean response = new MyBean();
         response.setData("Hi, " + name);
+
+        return response;
+    }
+
+    @ApiMethod(name = "getRandomJoke")
+    public MyBean getRandomJoke() {
+        MyBean response = new MyBean();
+        response.setData(JokeProvider.getRandomJoke());
 
         return response;
     }
